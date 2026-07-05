@@ -2,8 +2,8 @@
 
     Milenium Library
     -> Made by @finobe 
-    -> Kind of got bored idk what to do with life
-    -> Idk who or why this got leaked, ui was VERY popular and high in demand with customers
+    -> not made by rbcheats or 10cxm
+    -> credit to millenium owner
 ]]
 
 -- Variables 
@@ -742,6 +742,31 @@
                 
                 library[ "items" ].Enabled = bool
             end 
+
+            cfg.minimized = false
+            cfg.original_size = cfg.size
+
+            function cfg.minimize_menu(bool)
+                cfg.minimized = bool
+                
+                if bool then
+                    library:tween(items[ "main" ], {Size = dim2(0, cfg.size.X.Offset, 0, 56)}, Enum.EasingStyle.Quad, 0.3)
+                    items[ "side_frame" ].Visible = false
+                    items[ "multi_holder" ].Visible = false
+                    items[ "global_fade" ].Visible = false
+                    items[ "info" ].Visible = false
+                else
+                    library:tween(items[ "main" ], {Size = cfg.original_size}, Enum.EasingStyle.Quad, 0.3)
+                    items[ "side_frame" ].Visible = true
+                    items[ "multi_holder" ].Visible = true
+                    items[ "global_fade" ].Visible = true
+                    items[ "info" ].Visible = true
+                end
+            end
+
+            function cfg.toggle_minimize()
+                cfg.minimize_menu(not cfg.minimized)
+            end
                 
             return setmetatable(cfg, library)
         end 
