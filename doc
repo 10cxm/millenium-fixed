@@ -1,0 +1,651 @@
+# Millenium UI Library Documentation
+
+## Table of Contents
+- [Installation](#installation)
+- [Basic Setup](#basic-setup)
+- [Window](#window)
+- [Tabs](#tabs)
+- [Layout](#layout)
+- [Elements](#elements)
+- [Notifications](#notifications)
+- [Configuration](#configuration)
+- [Theming](#theming)
+
+---
+
+## Installation
+
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/10cxm/millenium-fixed/main/scr"))()
+```
+
+---
+
+## Basic Setup
+
+```lua
+local window = library:window({
+    name = "MyScript",
+    suffix = "Hub",
+    gameInfo = "Game Name Here",
+    size = UDim2.new(0, 700, 0, 565)
+})
+```
+
+### Window Properties
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| name | string | "nebula" | Main title text |
+| suffix | string | "tech" | Text after title |
+| gameInfo | string | "Milenium for Counter-Strike: Global Offensive" | Bottom info text |
+| size | UDim2 | UDim2.new(0, 700, 0, 565) | Window size |
+
+### Window Methods
+```lua
+window.toggle_menu(bool)
+window.minimize_menu(bool)
+window.toggle_minimize()
+library:unload_menu()
+```
+
+**Methods:**
+- `toggle_menu(bool)` - Show/hide entire UI
+- `minimize_menu(bool)` - Minimize to title bar only (true) or restore (false)
+- `toggle_minimize()` - Toggle between minimized and full size
+- `unload_menu()` - Completely destroy and cleanup UI
+
+---
+
+## Tabs
+
+```lua
+local tab1, tab2, tab3 = window:tab({
+    name = "Combat",
+    icon = "rbxassetid://6034767608",
+    tabs = {"Section1", "Section2", "Section3"}
+})
+```
+
+### Tab Properties
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| name | string | "visuals" | Tab name |
+| icon | string | "rbxassetid://6034767608" | Tab icon |
+| tabs | table | {"Main", "Misc.", "Settings"} | Sub-sections |
+
+### Returns
+Returns multiple tab objects (one for each sub-section defined in `tabs`)
+
+---
+
+## Layout
+
+### Column
+```lua
+local column = tab:column({
+    size = 0.5
+})
+```
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| size | number | 1 | Column width (0-1) |
+
+### Sub Tab
+```lua
+local subTab = tab:sub_tab({
+    order = 0,
+    size = 1
+})
+```
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| order | number | 0 | Layout order |
+| size | number | 1 | Sub-tab size |
+
+### Section
+```lua
+local section = column:section({
+    name = "Section Name",
+    size = 1,
+    icon = "rbxassetid://6022668898",
+    fading = false
+})
+```
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| name | string | "section" | Section title |
+| size | number | 0.5 | Section height (0-1) |
+| icon | string | "rbxassetid://6022668898" | Section icon |
+| fading | boolean | false | Enable collapsible toggle |
+
+---
+
+## Elements
+
+### Toggle
+
+#### Checkbox Style
+```lua
+section:toggle({
+    name = "Enable Feature",
+    default = false,
+    type = "checkbox",
+    callback = function(value) end,
+    flag = "my_toggle",
+    info = "Additional info text",
+    seperator = true
+})
+```
+
+#### Toggle Style
+```lua
+section:toggle({
+    name = "Enable Feature",
+    default = false,
+    type = "toggle",
+    callback = function(value) end
+})
+```
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| name | string | "Toggle" | Toggle name |
+| default | boolean | false | Initial state |
+| type | string | random | "checkbox" or "toggle" |
+| callback | function | empty | Called on change |
+| flag | string | auto | Config flag name |
+| info | string | nil | Info text below toggle |
+| seperator | boolean | false | Show separator below |
+
+### Slider
+
+```lua
+section:slider({
+    name = "Value",
+    min = 0,
+    max = 100,
+    default = 50,
+    interval = 1,
+    suffix = "%",
+    callback = function(value) end,
+    flag = "my_slider",
+    info = "Slider info text",
+    seperator = true
+})
+```
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| name | string | nil | Slider name |
+| min | number | 0 | Minimum value |
+| max | number | 100 | Maximum value |
+| default | number | 10 | Initial value |
+| interval | number | 1 | Step size |
+| suffix | string | "" | Text after value |
+| callback | function | empty | Called on change |
+| flag | string | auto | Config flag name |
+| info | string | nil | Info text |
+| seperator | boolean | true | Show separator |
+
+### Dropdown
+
+#### Single Select
+```lua
+section:dropdown({
+    name = "Option",
+    items = {"Option1", "Option2", "Option3"},
+    default = "Option1",
+    multi = false,
+    callback = function(value) end,
+    flag = "my_dropdown",
+    width = 130,
+    info = "Dropdown info",
+    seperator = true
+})
+```
+
+#### Multi Select
+```lua
+section:dropdown({
+    name = "Options",
+    items = {"Option1", "Option2", "Option3"},
+    default = {"Option1"},
+    multi = true,
+    callback = function(values) end
+})
+```
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| name | string | nil | Dropdown name |
+| items | table | {""} | Available options |
+| default | string/table | first item | Initial selection |
+| multi | boolean | false | Multi-select mode |
+| callback | function | empty | Called on change |
+| flag | string | auto | Config flag name |
+| width | number | 130 | Dropdown width |
+| info | string | nil | Info text |
+| seperator | boolean | true | Show separator |
+
+### Methods
+```lua
+dropdown.set(value)
+dropdown.refresh_options(newItems)
+dropdown.set_visible(bool)
+```
+
+### Keybind
+
+```lua
+section:keybind({
+    name = "Keybind",
+    key = Enum.KeyCode.E,
+    mode = "Toggle",
+    default = false,
+    callback = function(active) end,
+    flag = "my_keybind"
+})
+```
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| name | string | nil | Keybind name |
+| key | KeyCode | nil | Initial key |
+| mode | string | "Toggle" | "Toggle", "Hold", or "Always" |
+| default | boolean | false | Initial active state |
+| callback | function | empty | Called on state change |
+| flag | string | auto | Config flag name |
+
+### Methods
+```lua
+keybind.set(input)
+keybind.set_mode(mode)
+keybind.set_visible(bool)
+```
+
+### Colorpicker
+
+```lua
+section:colorpicker({
+    name = "Color",
+    color = Color3.fromRGB(255, 255, 255),
+    alpha = 0.5,
+    callback = function(color, alpha) end,
+    flag = "my_color",
+    seperator = false
+})
+```
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| name | string | "Color" | Colorpicker name |
+| color | Color3 | Color3.new(1,1,1) | Initial color |
+| alpha | number | 0 | Initial transparency (0-1) |
+| callback | function | empty | Called on change |
+| flag | string | auto | Config flag name |
+| seperator | boolean | false | Show separator |
+
+### Methods
+```lua
+colorpicker.set(color, alpha)
+colorpicker.set_visible(bool)
+```
+
+### Textbox
+
+```lua
+section:textbox({
+    name = "Text Input",
+    placeholder = "Type here...",
+    default = "",
+    callback = function(text) end,
+    flag = "my_textbox"
+})
+```
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| name | string | "TextBox" | Textbox label |
+| placeholder | string | "type here..." | Placeholder text |
+| default | string | "" | Initial text |
+| callback | function | empty | Called on change |
+| flag | string | auto | Config flag name |
+
+### Methods
+```lua
+textbox.set(text)
+```
+
+### Button
+
+```lua
+section:button({
+    name = "Click Me",
+    callback = function() end
+})
+```
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| name | string | "TextBox" | Button text |
+| callback | function | empty | Called on click |
+
+### Label
+
+```lua
+section:label({
+    name = "Label Text",
+    info = "Additional info",
+    seperator = false
+})
+```
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| name | string | "Toggle" | Label text |
+| info | string | nil | Additional info |
+| seperator | boolean | false | Show separator |
+
+### List
+
+```lua
+section:list({
+    options = {"Item1", "Item2", "Item3"},
+    flag = "my_list",
+    callback = function(selected) end
+})
+```
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| options | table | {"1","2","3"} | List items |
+| flag | string | auto | Config flag name |
+| callback | function | empty | Called on selection |
+
+### Methods
+```lua
+list.refresh_options(newOptions)
+```
+
+---
+
+## Notifications
+
+```lua
+library.notifications:create_notification({
+    name = "Title",
+    info = "Description text here",
+    lifetime = 3
+})
+```
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| name | string | "This is a title!" | Notification title |
+| info | string | "This is extra info!" | Notification text |
+| lifetime | number | 3 | Duration in seconds |
+
+---
+
+## Configuration
+
+### Save Config
+```lua
+local config = library:get_config()
+writefile(library.directory .. "/configs/myconfig.cfg", config)
+```
+
+### Load Config
+```lua
+local config = readfile(library.directory .. "/configs/myconfig.cfg")
+library:load_config(config)
+```
+
+### Delete Config
+```lua
+delfile(library.directory .. "/configs/myconfig.cfg")
+```
+
+### Update Config List
+```lua
+library:update_config_list()
+```
+
+### Accessing Flags
+```lua
+library.flags["my_toggle"]
+library.flags["my_slider"]
+library.flags["my_dropdown"]
+```
+
+---
+
+## Theming
+
+### Change Accent Color
+```lua
+library:update_theme("accent", Color3.fromRGB(255, 100, 150))
+```
+
+### Set Theme on Load
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/10cxm/millenium-fixed/main/scr"))()
+library:update_theme("accent", Color3.fromRGB(100, 200, 255))
+```
+
+---
+
+## Utility Functions
+
+### Tweening
+```lua
+library:tween(object, {Property = value}, EasingStyle, time)
+```
+
+### Draggify
+```lua
+library:draggify(frame)
+```
+
+### Resizify
+```lua
+library:resizify(frame)
+```
+
+### Create Instance
+```lua
+library:create("Frame", {
+    Parent = parent,
+    Size = UDim2.new(1, 0, 1, 0)
+})
+```
+
+### Connections
+```lua
+local connection = library:connection(signal, function() end)
+```
+
+### Next Flag
+```lua
+local flag = library:next_flag()
+```
+
+---
+
+## Complete Example
+
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/10cxm/millenium-fixed/main/scr"))()
+
+library:update_theme("accent", Color3.fromRGB(255, 100, 150))
+
+local window = library:window({
+    name = "MyScript",
+    suffix = "V1",
+    gameInfo = "Game Name",
+    size = UDim2.new(0, 700, 0, 565)
+})
+
+local main, settings = window:tab({
+    name = "Main",
+    icon = "rbxassetid://6034767608",
+    tabs = {"Combat", "Settings"}
+})
+
+local column = main:column({size = 1})
+local section = column:section({
+    name = "Features",
+    size = 1,
+    icon = "rbxassetid://6022668898"
+})
+
+section:toggle({
+    name = "Enable Aimbot",
+    default = false,
+    callback = function(val)
+        print("Aimbot:", val)
+    end
+})
+
+section:slider({
+    name = "FOV",
+    min = 50,
+    max = 500,
+    default = 150,
+    callback = function(val)
+        print("FOV:", val)
+    end
+})
+
+section:dropdown({
+    name = "Target",
+    items = {"Head", "Torso", "Random"},
+    default = "Head",
+    callback = function(val)
+        print("Target:", val)
+    end
+})
+
+section:colorpicker({
+    name = "Color",
+    color = Color3.fromRGB(255, 0, 0),
+    callback = function(color, alpha)
+        print("Color:", color)
+    end
+})
+
+library.notifications:create_notification({
+    name = "Script Loaded",
+    info = "All features ready!",
+    lifetime = 3
+})
+
+window.toggle_menu(true)
+```
+
+---
+
+## Flag System
+
+Flags store element values for configs:
+
+```lua
+library.flags["element_flag"]
+library.config_flags["element_flag"]
+```
+
+Access toggle state:
+```lua
+if library.flags["my_toggle"] then
+    print("Toggle is enabled")
+end
+```
+
+Access slider value:
+```lua
+local fov = library.flags["fov_slider"]
+```
+
+Access color:
+```lua
+local color = library.flags["my_color"]
+local colorValue = color.Color
+local transparency = color.Transparency
+```
+
+---
+
+## Tips
+
+1. **Flags**: Always set unique flag names for config saving
+2. **Callbacks**: Use callbacks for real-time updates
+3. **Sections**: Use `fading = true` to make collapsible sections
+4. **Multi-select**: Set `multi = true` on dropdowns for multiple selections
+5. **Info Text**: Use `info` parameter to add helpful descriptions
+6. **Separators**: Use `seperator = true` to add visual separation
+7. **Theme**: Set accent color before creating window
+8. **Notifications**: Use for user feedback and status updates
+
+---
+
+## Common Patterns
+
+### Toggle with Keybind
+```lua
+local toggle = section:toggle({
+    name = "Feature",
+    callback = function(val) end
+})
+
+section:keybind({
+    name = "Toggle Key",
+    callback = function(val)
+        toggle.set(val)
+    end
+})
+```
+
+### Slider with Visual Feedback
+```lua
+section:slider({
+    name = "Value",
+    min = 0,
+    max = 100,
+    callback = function(val)
+        library.notifications:create_notification({
+            name = "Updated",
+            info = "Value: " .. val
+        })
+    end
+})
+```
+
+### Colorpicker with Theme Update
+```lua
+section:colorpicker({
+    name = "UI Color",
+    color = Color3.fromRGB(155, 150, 219),
+    callback = function(color, alpha)
+        library:update_theme("accent", color)
+    end
+})
+```
+
+### Dropdown with Dynamic Options
+```lua
+local dropdown = section:dropdown({
+    name = "Players",
+    items = {}
+})
+
+game.Players.PlayerAdded:Connect(function()
+    local players = {}
+    for _, player in game.Players:GetPlayers() do
+        table.insert(players, player.Name)
+    end
+    dropdown.refresh_options(players)
+end)
+```
