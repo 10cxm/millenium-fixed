@@ -617,81 +617,6 @@
                     BackgroundColor3 = rgb(255, 255, 255)
                 }); cfg.multi_holder = items[ "multi_holder" ];
                 
-                items[ "navbar_buttons" ] = library:create( "Frame" , {
-                    Parent = items[ "multi_holder" ];
-                    Name = "\0";
-                    BackgroundTransparency = 1;
-                    AnchorPoint = vec2(1, 0);
-                    Position = dim2(1, -10, 0, 14);
-                    BorderColor3 = rgb(0, 0, 0);
-                    Size = dim2(0, 60, 0, 28);
-                    BorderSizePixel = 0;
-                    BackgroundColor3 = rgb(255, 255, 255)
-                });
-                
-                library:create( "UIListLayout" , {
-                    Parent = items[ "navbar_buttons" ];
-                    FillDirection = Enum.FillDirection.Horizontal;
-                    Padding = dim(0, 8);
-                    HorizontalAlignment = Enum.HorizontalAlignment.Right;
-                    VerticalAlignment = Enum.VerticalAlignment.Center;
-                    SortOrder = Enum.SortOrder.LayoutOrder
-                });
-                
-                items[ "minimize_button" ] = library:create( "TextButton" , {
-                    Parent = items[ "navbar_buttons" ];
-                    Name = "\0";
-                    Text = "−";
-                    FontFace = fonts.font;
-                    TextSize = 20;
-                    TextColor3 = rgb(180, 180, 180);
-                    BackgroundColor3 = rgb(33, 33, 35);
-                    BorderSizePixel = 0;
-                    Size = dim2(0, 28, 0, 28);
-                    AutoButtonColor = false;
-                    LayoutOrder = 1
-                });
-                
-                library:create( "UICorner" , {
-                    Parent = items[ "minimize_button" ];
-                    CornerRadius = dim(0, 4)
-                });
-                
-                items[ "close_button" ] = library:create( "TextButton" , {
-                    Parent = items[ "navbar_buttons" ];
-                    Name = "\0";
-                    Text = "×";
-                    FontFace = fonts.font;
-                    TextSize = 24;
-                    TextColor3 = rgb(180, 180, 180);
-                    BackgroundColor3 = rgb(33, 33, 35);
-                    BorderSizePixel = 0;
-                    Size = dim2(0, 28, 0, 28);
-                    AutoButtonColor = false;
-                    LayoutOrder = 2
-                });
-                
-                library:create( "UICorner" , {
-                    Parent = items[ "close_button" ];
-                    CornerRadius = dim(0, 4)
-                });
-                
-                items[ "minimize_button" ].MouseEnter:Connect(function()
-                    library:tween(items[ "minimize_button" ], {TextColor3 = rgb(255, 255, 255), BackgroundColor3 = rgb(50, 50, 52)})
-                end)
-                
-                items[ "minimize_button" ].MouseLeave:Connect(function()
-                    library:tween(items[ "minimize_button" ], {TextColor3 = rgb(180, 180, 180), BackgroundColor3 = rgb(33, 33, 35)})
-                end)
-                
-                items[ "close_button" ].MouseEnter:Connect(function()
-                    library:tween(items[ "close_button" ], {TextColor3 = rgb(255, 255, 255), BackgroundColor3 = rgb(180, 50, 50)})
-                end)
-                
-                items[ "close_button" ].MouseLeave:Connect(function()
-                    library:tween(items[ "close_button" ], {TextColor3 = rgb(180, 180, 180), BackgroundColor3 = rgb(33, 33, 35)})
-                end)
-                
                 library:create( "Frame" , {
                     AnchorPoint = vec2(0, 1);
                     Parent = items[ "multi_holder" ];
@@ -817,46 +742,6 @@
                 
                 library[ "items" ].Enabled = bool
             end 
-
-            cfg.minimized = false
-            cfg.original_size = cfg.size
-
-            function cfg.minimize_menu(bool)
-                cfg.minimized = bool
-                
-                if bool then
-                    library:tween(items[ "main" ], {Size = dim2(0, cfg.size.X.Offset, 0, 56)}, Enum.EasingStyle.Quad, 0.3)
-                    items[ "side_frame" ].Visible = false
-                    items[ "multi_holder" ].Visible = true
-                    items[ "navbar_buttons" ].Visible = true
-                    items[ "global_fade" ].Visible = false
-                    items[ "info" ].Visible = false
-                    items[ "minimize_button" ].Text = "□"
-                else
-                    library:tween(items[ "main" ], {Size = cfg.original_size}, Enum.EasingStyle.Quad, 0.3)
-                    items[ "side_frame" ].Visible = true
-                    items[ "multi_holder" ].Visible = true
-                    items[ "navbar_buttons" ].Visible = true
-                    items[ "global_fade" ].Visible = true
-                    items[ "info" ].Visible = true
-                    items[ "minimize_button" ].Text = "−"
-                end
-            end
-
-            function cfg.toggle_minimize()
-                cfg.minimize_menu(not cfg.minimized)
-            end
-            
-            items[ "minimize_button" ].MouseButton1Click:Connect(function()
-                cfg.toggle_minimize()
-            end)
-            
-            items[ "close_button" ].MouseButton1Click:Connect(function()
-                library:tween(items[ "main" ], {Size = dim2(0, 0, 0, 0)}, Enum.EasingStyle.Quad, 0.3)
-                library:tween(items[ "shadow" ], {ImageTransparency = 1}, Enum.EasingStyle.Quad, 0.3)
-                task.wait(0.3)
-                library:unload_menu()
-            end)
                 
             return setmetatable(cfg, library)
         end 
